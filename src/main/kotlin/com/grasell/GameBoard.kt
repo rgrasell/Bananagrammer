@@ -2,6 +2,7 @@ package com.grasell
 
 import kotlinx.collections.immutable.ImmutableMap
 
+// TODO: Optimization: Creating a billion little Coord objects is hard on GC.  We might be able to get rid of this class.
 data class Coord(val x: Int, val y: Int) {
     val upOne get() = Coord(x, y-1)
     val downOne get() = Coord(x, y+1)
@@ -9,6 +10,8 @@ data class Coord(val x: Int, val y: Int) {
     val rightOne get() = Coord(x+1, y)
 }
 
+// TODO: Optimization: If we get rid of Coord, how will we represent a game board?
+// Consider a linked graph with han anchor at (0,0)
 typealias GameBoard = ImmutableMap<Coord, Tile>
 
 data class Tile(val char: Char)
@@ -29,6 +32,7 @@ private fun GameBoard.horizontalWord(coord: Coord, newChar: Char) = wordFromLeft
 
 private fun GameBoard.verticalWord(coord: Coord, newChar: Char) = wordFromTop(coord.upOne) + newChar + wordToBottom(coord.downOne)
 
+// TODO: Optimization: the following 4 methods recurse inefficiently
 private fun GameBoard.wordFromLeft(coord: Coord): String {
     val tile = this[coord] ?: return ""
 
@@ -61,6 +65,7 @@ fun GameBoard.allWords(): Sequence<String> = this.asSequence()
         .distinct()
 
 // TODO: Optimization: Iterate through only once to find min/max of each coordinate
+// This is low priority though.  It's only called to display output of the algorithm.
 fun GameBoard.humanReadable(): String {
     if (this.isEmpty()) return "[Empty board]"
 

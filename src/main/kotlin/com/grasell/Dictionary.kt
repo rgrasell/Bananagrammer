@@ -2,6 +2,8 @@ package com.grasell
 
 import kotlin.math.min
 
+// TODO: Tests to ensure that this works. Especially the maxWordLength feature of anyStartWith()
+// TODO: Optimization: This class has many inefficient recursive calls
 class Dictionary {
     private val root = Node()
 
@@ -70,6 +72,7 @@ private class Node {
         return char - 'a'
     }
 
+    // TODO: Optimization: How is subSequence implemented? Hope we aren't copying strings.
     private fun withoutFirstChar(seq: CharSequence): CharSequence {
         return seq.subSequence(1, seq.length)
     }
