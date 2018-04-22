@@ -1,5 +1,6 @@
 package com.grasell
 
+import kotlinx.collections.immutable.ImmutableSet
 import kotlin.math.min
 
 // TODO: Tests to ensure that this works. Especially the maxWordLength feature of anyStartWith()
@@ -8,7 +9,7 @@ class Dictionary {
     private val root = Node()
 
     fun isWord(seq: CharSequence) = root.isWord(seq)
-    fun anyStartWith(seq: CharSequence, maxWordLength: Int = Int.MAX_VALUE) = root.isPrefix(seq, maxWordLength)
+    fun anyStartWith(seq: CharSequence, hand: Hand) = root.isPrefix(seq, hand)
     fun add(seq: CharSequence) = root.add(seq)
 }
 
@@ -38,14 +39,14 @@ private class Node {
         return subNode.isWord(nextSeq)
     }
 
-    tailrec fun isPrefix(seq: CharSequence, maxWordLength: Int): Boolean {
-        if (smallestLeaf > maxWordLength) return false
+    tailrec fun isPrefix(seq: CharSequence, hand: Hand): Boolean {
+        if (smallestLeaf > hand.size) return false
         if (seq.isEmpty()) return true
-
+        //TODO: Optimization: check if we can possibly make another jump given out hand
         val index = getIndex(seq.first())
         val subNode = subNodes[index] ?: return false
         val nextSeq = withoutFirstChar(seq)
-        return subNode.isPrefix(nextSeq, maxWordLength)
+        return subNode.isPrefix(nextSeq, hand)
     }
 
     private tailrec fun addRecursive(seq: CharSequence) {

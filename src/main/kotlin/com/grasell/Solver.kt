@@ -3,31 +3,27 @@ package com.grasell
 import kotlinx.collections.immutable.immutableMapOf
 import kotlinx.collections.immutable.toImmutableSet
 
-fun solve(tiles: Set<Letter>, dictionary: Dictionary, gameBoard: GameBoard = immutableMapOf()): GameBoard? {
+fun solve(hand: Hand, dictionary: Dictionary, gameBoard: GameBoard = immutableMapOf()): GameBoard? {
 
-    // If we're out of tiles, check that all words are valid
-    if (tiles.isEmpty()) {
+    // If we're out of hand, check that all words are valid
+    if (hand.noTiles()) {
         val allValid = gameBoard.allWords().all { dictionary.isWord(it) }
         return if (allValid) gameBoard else null
     }
 
-    val immutableLetters = tiles.toImmutableSet()
-
     val solution = gameBoard.allValidPlacements()
             .flatMap { coord ->
-                immutableLetters.asSequence()
+                hand.charSequence()
                         .filter { letter ->
-                            gameBoard.wordsIfPlaced(coord, letter.char).all { dictionary.anyStartWith(it, immutableLetters.size-1) }
+                            gameBoard.wordsIfPlaced(coord, letter).all { dictionary.anyStartWith(it, hand) }
                         }
-                        .map { letter -> solve(immutableLetters.remove(letter), dictionary, gameBoard.withTile(letter.char, coord)) }
+                        .map { letter -> solve(hand.remove(letter), dictionary, gameBoard.withTile(letter, coord)) }
             }
             .firstOrNull { it != null }
 
     return solution
 }
 
-// Wrapper class that allows us to track multiple instances of the same character in a set
-class Letter(val char: Char)
 
 /**
  * Our algorithm works by placing tiles in the bottom or right sides of existing tiles.

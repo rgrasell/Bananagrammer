@@ -28,6 +28,7 @@ fun GameBoard.wordsIfPlaced(coord: Coord, newChar: Char): Sequence<String> {
     return seq
 }
 
+//TODO: Store words someplace????
 private fun GameBoard.horizontalWord(coord: Coord, newChar: Char) = wordFromLeft(coord.leftOne) + newChar + wordToRight(coord.rightOne)
 
 private fun GameBoard.verticalWord(coord: Coord, newChar: Char) = wordFromTop(coord.upOne) + newChar + wordToBottom(coord.downOne)

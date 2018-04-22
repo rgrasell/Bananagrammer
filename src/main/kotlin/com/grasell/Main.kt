@@ -7,16 +7,12 @@ fun main(args: Array<String>) {
     val dict = buildDictionary()
     println("Dictionary build.")
 
-    val testString = "thhhhisisatest"
+    val testString = "thisisatest"
 
-    val solution = solve(letterSet(testString), dict)
+    val solution = solve(stringToHand(testString), dict)
 
     println(solution?.humanReadable() ?: "No solution :(")
 }
-
-private fun letterSet(chars: String) = chars.asSequence()
-        .map { Letter(it) }
-        .toSet()
 
 private fun buildDictionary(): Dictionary {
     val dictionary = Dictionary()
