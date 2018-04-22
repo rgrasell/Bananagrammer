@@ -1,6 +1,7 @@
 package com.grasell
 
 import java.io.File
+import kotlin.system.measureTimeMillis
 
 fun main(args: Array<String>) {
     println("Building dictionary.")
@@ -9,9 +10,12 @@ fun main(args: Array<String>) {
 
     val testString = "thisisatest"
 
-    val solution = solve(stringToHand(testString), dict)
+    val time = measureTimeMillis {
+        println(solve(stringToHand(testString), dict)?.humanReadable() ?: "No solution :(")
+    }
 
-    println(solution?.humanReadable() ?: "No solution :(")
+    println("Solved in $time millis.")
+
 }
 
 private fun buildDictionary(): Dictionary {

@@ -1,7 +1,6 @@
 package com.grasell
 
 import kotlinx.collections.immutable.immutableMapOf
-import kotlinx.collections.immutable.toImmutableSet
 
 fun solve(hand: Hand, dictionary: Dictionary, gameBoard: GameBoard = immutableMapOf()): GameBoard? {
 
