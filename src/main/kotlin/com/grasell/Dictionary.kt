@@ -15,6 +15,7 @@ class Dictionary {
 
 private class Node {
     val subNodes = Array<Node?>('z' - 'a' + 1) { null }
+    val commonNextCharacters = Array<Int>('z' - 'a' + 1) { 0 }
     var smallestLeaf = 0
     var terminal = false
 
@@ -42,7 +43,7 @@ private class Node {
     tailrec fun isPrefix(seq: CharSequence, hand: Hand): Boolean {
         if (smallestLeaf > hand.size) return false
         if (seq.isEmpty()) return true
-        //TODO: Optimization: check if we can possibly make another jump given out hand
+        //TODO: Optimization: check if we can possibly make another jump given our hand
         val index = getIndex(seq.first())
         val subNode = subNodes[index] ?: return false
         val nextSeq = withoutFirstChar(seq)

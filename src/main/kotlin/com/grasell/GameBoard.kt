@@ -28,17 +28,14 @@ fun GameBoard.wordsIfPlaced(coord: Coord, newChar: Char): Sequence<String> {
     return seq
 }
 
-//TODO: Store words someplace????
+//TODO: Possibly memoize results?
 private fun GameBoard.horizontalWord(coord: Coord, newChar: Char) = wordFromLeft(coord.leftOne) + newChar + wordToRight(coord.rightOne)
 
 private fun GameBoard.verticalWord(coord: Coord, newChar: Char) = wordFromTop(coord.upOne) + newChar + wordToBottom(coord.downOne)
 
-// TODO: Optimization: the following 4 methods recurse inefficiently
-private fun GameBoard.wordFromLeft(coord: Coord): String {
-    val tile = this[coord] ?: return ""
-
-    return wordFromLeft(coord.leftOne) + tile.char
-}
+// TODO: Optimization: need a more efficient way to build up the word representatino than concatting strings
+private fun GameBoard.wordFromLeft(coord: Coord) =
+        buildWord(coord, { it.leftOne }, { char, string -> char + string } )
 
 private fun GameBoard.wordToRight(coord: Coord): String {
     val tile = this[coord] ?: return ""
@@ -46,16 +43,25 @@ private fun GameBoard.wordToRight(coord: Coord): String {
     return tile.char + wordToRight(coord.rightOne)
 }
 
-private fun GameBoard.wordFromTop(coord: Coord): String {
-    val tile = this[coord] ?: return ""
-
-    return wordFromTop(coord.upOne) + tile.char
-}
+private fun GameBoard.wordFromTop(coord: Coord) =
+        buildWord(coord, { it.upOne }, { char, string -> char + string })
 
 private fun GameBoard.wordToBottom(coord: Coord): String {
-    val tile = this[coord] ?: return ""
+    return buildWord(coord, { it.downOne }, { char, string -> string + char })
+}
 
-    return tile.char + wordToBottom(coord.downOne)
+private fun GameBoard.buildWord(coord: Coord, nextCoord: (Coord) -> Coord, reduce: (Char, String) -> String): String {
+    var cursor = coord
+    var tile = this[cursor]
+    var word = ""
+
+    while (tile != null) {
+        word = reduce(tile.char, word)
+        cursor = nextCoord(cursor)
+        tile = this[cursor]
+    }
+
+    return word
 }
 
 // TODO: Optimization: less hack please
