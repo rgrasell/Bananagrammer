@@ -30,7 +30,7 @@ fun solve(hand: Hand, dictionary: Dictionary, gameBoard: GameBoard = immutableMa
  * If there are no tiles on the board, we start with 1 valid placement in the center.
  */
 fun GameBoard.allValidPlacements() =
-        if (isEmpty()) sequenceOf(Coord(0, 0))
+        if (isEmpty()) sequenceOf(newCoord(0, 0))
         else this.asSequence()
                 .flatMap { (key, value) -> sequenceOf(key.rightOne, key.downOne) }
                 .filter { !this.containsKey(it) }

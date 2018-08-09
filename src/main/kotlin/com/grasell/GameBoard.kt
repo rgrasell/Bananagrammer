@@ -2,16 +2,40 @@ package com.grasell
 
 import kotlinx.collections.immutable.ImmutableMap
 
-// TODO: Optimization: Creating a billion little Coord objects is hard on GC.  We might be able to get rid of this class.
-data class Coord(val x: Int, val y: Int) {
-    val upOne get() = Coord(x, y-1)
-    val downOne get() = Coord(x, y+1)
-    val leftOne get() = Coord(x-1, y)
-    val rightOne get() = Coord(x+1, y)
+/**
+ * The new version of the Coord class packs 2 Int dimensions (x, y) into 1 Long.  The goal is to reduce memory pressure and GC overhead.
+ * We use bit operations to extract the Int values when requested.
+ */
+typealias Coord = Long
+val Coord.x: Int
+    get() = (0xFFFFFFFF and this).toInt()
+val Coord.y: Int
+    get() = ((this shr 32) and 0xFFFFFFFF).toInt()
+val Coord.upOne get() = newCoord(x, y-1)
+val Coord.downOne get() = newCoord(x, y+1)
+val Coord.leftOne get() = newCoord(x-1, y)
+val Coord.rightOne get() = newCoord(x+1, y)
+
+/**
+ * Emulate a constructor for our new fake class.
+ */
+fun newCoord(x: Int, y: Int): Coord {
+    val low = x.toLong()
+    val high = y.toLong() shl 32
+    return low or high
 }
 
+// TODO: Optimization: Creating a billion little Coord objects is hard on GC.  We might be able to get rid of this class.
+// The implementation directly above should fix this optimization problem.
+//data class Coord(val x: Int, val y: Int) {
+//    val upOne get() = Coord(x, y-1)
+//    val downOne get() = Coord(x, y+1)
+//    val leftOne get() = Coord(x-1, y)
+//    val rightOne get() = Coord(x+1, y)
+//}
+
 // TODO: Optimization: If we get rid of Coord, how will we represent a game board?
-// Consider a linked graph with han anchor at (0,0)
+// Consider a linked graph with an anchor at (0,0)
 typealias GameBoard = ImmutableMap<Coord, Tile>
 
 data class Tile(val char: Char)
@@ -84,7 +108,7 @@ fun GameBoard.humanReadable(): String {
     return (smallestY..biggestY).asSequence().map { y ->
         (smallestX..biggestX).asSequence()
                 .map { x ->
-                    this[Coord(x, y)]?.char ?: ' '
+                    this[newCoord(x, y)]?.char ?: ' '
                 }
                 .joinToString(separator = " ")
     }.joinToString(separator = "\n")

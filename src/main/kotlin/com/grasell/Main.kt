@@ -6,7 +6,7 @@ import kotlin.system.measureTimeMillis
 fun main(args: Array<String>) {
     println("Building dictionary.")
     val dict = buildDictionary()
-    println("Dictionary build.")
+    println("Dictionary built.")
 
     val testString = "thisisatest"
 
