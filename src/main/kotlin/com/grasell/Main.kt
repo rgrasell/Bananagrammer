@@ -8,7 +8,7 @@ fun main(args: Array<String>) {
     val dict = buildDictionary()
     println("Dictionary built.")
 
-    val testString = "thisisatest"
+    val testString = "ryanalwaysdoit"
 
     val time = measureTimeMillis {
         println(solve(stringToHand(testString), dict)?.humanReadable() ?: "No solution :(")
