@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 class CoordTest {
 
     @Test
-    public fun test_Constructor() {
+    fun `newCoord creates coord with correct x and y values`() {
         val coord = newCoord(10, 15)
 
         assertEquals(10, coord.x)
@@ -14,7 +14,7 @@ class CoordTest {
     }
 
     @Test
-    public fun test_downOne() {
+    fun `downOne increments y by 1`() {
         val coord = newCoord(10, 15)
 
         assertEquals(10, coord.downOne.x)
@@ -22,7 +22,7 @@ class CoordTest {
     }
 
     @Test
-    public fun test_upOne() {
+    fun `upOne decrements y by 1`() {
         val coord = newCoord(10, 15)
 
         assertEquals(10, coord.upOne.x)
@@ -30,7 +30,7 @@ class CoordTest {
     }
 
     @Test
-    public fun leftOne() {
+    fun `leftOne decrements x by 1`() {
         val coord = newCoord(10, 15)
 
         assertEquals(9, coord.leftOne.x)
@@ -38,10 +38,26 @@ class CoordTest {
     }
 
     @Test
-    public fun test_rightOne() {
+    fun `rightOne increments x by 1`() {
         val coord = newCoord(10, 15)
 
         assertEquals(11, coord.rightOne.x)
         assertEquals(15, coord.rightOne.y)
+    }
+
+    @Test
+    fun `coord handles negative values correctly`() {
+        val coord = newCoord(-5, -10)
+
+        assertEquals(-5, coord.x)
+        assertEquals(-10, coord.y)
+    }
+
+    @Test
+    fun `coord handles zero values correctly`() {
+        val coord = newCoord(0, 0)
+
+        assertEquals(0, coord.x)
+        assertEquals(0, coord.y)
     }
 }

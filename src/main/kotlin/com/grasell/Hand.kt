@@ -2,6 +2,14 @@ package com.grasell
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
+/**
+ * Represents the player's hand of letter tiles.
+ * 
+ * Implemented as an immutable list of 26 integers, where each index represents
+ * a letter (0='a', 1='b', ..., 25='z') and the value is the count of that tile.
+ * 
+ * Immutability enables safe backtracking in the solver algorithm.
+ */
 typealias Hand = ImmutableList<Int>
 
 fun Hand.has(c: Char): Boolean {
@@ -13,7 +21,7 @@ private fun Hand.getIndex(c : Char):Int {
 }
 
 fun Hand.remove(c: Char): Hand {
-    if(this[getIndex(c)] == 0) throw Exception("Oppsie Poopsies we made a boo boo ;) teehee")
+    if(this[getIndex(c)] == 0) throw IllegalStateException("Cannot remove '$c' from hand: tile not present")
 
     return this.set(getIndex(c), this[getIndex(c)]-1)
 }

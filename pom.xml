@@ -12,8 +12,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.2.60</kotlin.version>
-        <junit.version>4.13.1</junit.version>
+        <kotlin.version>1.9.22</kotlin.version>
+        <junit.version>4.13.2</junit.version>
+        <kotlinx.collections.version>0.3.7</kotlinx.collections.version>
     </properties>
 
     <dependencies>
@@ -24,8 +25,8 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-collections-immutable</artifactId>
-            <version>0.1</version>
+            <artifactId>kotlinx-collections-immutable-jvm</artifactId>
+            <version>${kotlinx.collections.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -43,12 +44,8 @@
 
     <repositories>
         <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>kotlinx</id>
-            <name>bintray</name>
-            <url>http://dl.bintray.com/kotlin/kotlinx</url>
+            <id>mavenCentral</id>
+            <url>https://repo1.maven.org/maven2/</url>
         </repository>
     </repositories>
 

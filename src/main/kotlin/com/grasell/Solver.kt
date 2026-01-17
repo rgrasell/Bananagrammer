@@ -2,6 +2,18 @@ package com.grasell
 
 import kotlinx.collections.immutable.immutableMapOf
 
+/**
+ * Attempts to solve a Bananagrams puzzle using backtracking.
+ * 
+ * The algorithm places tiles one at a time, checking that all formed words
+ * are valid dictionary prefixes. When all tiles are placed, it verifies
+ * that all words are complete dictionary entries.
+ * 
+ * @param hand The remaining tiles to place
+ * @param dictionary The dictionary for word validation
+ * @param gameBoard The current state of the board (empty by default)
+ * @return A solved GameBoard if a solution exists, null otherwise
+ */
 fun solve(hand: Hand, dictionary: Dictionary, gameBoard: GameBoard = immutableMapOf()): GameBoard? {
 
     // If we're out of hand, check that all words are valid
@@ -32,5 +44,5 @@ fun solve(hand: Hand, dictionary: Dictionary, gameBoard: GameBoard = immutableMa
 fun GameBoard.allValidPlacements() =
         if (isEmpty()) sequenceOf(newCoord(0, 0))
         else this.asSequence()
-                .flatMap { (key, value) -> sequenceOf(key.rightOne, key.downOne) }
+                .flatMap { (key, _) -> sequenceOf(key.rightOne, key.downOne) }
                 .filter { !this.containsKey(it) }

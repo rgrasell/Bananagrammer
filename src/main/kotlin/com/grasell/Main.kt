@@ -24,7 +24,7 @@ private fun buildDictionary(): Dictionary {
     val inputStream = File("dictionary.txt").inputStream()
 
     inputStream.bufferedReader().useLines {
-        it.map { word -> word.toLowerCase() }
+        it.map { word -> word.lowercase() }
                 .forEach { dictionary.add(it) }
     }
 

@@ -1,28 +1,43 @@
 package com.grasell
 
-import kotlinx.collections.immutable.ImmutableSet
 import kotlin.math.min
 
+/**
+ * A Trie-based dictionary for efficient word lookups and prefix matching.
+ * 
+ * This dictionary only supports lowercase a-z characters. Words containing
+ * uppercase letters or non-letter characters will be rejected.
+ * 
+ * Key features:
+ * - O(n) lookup time where n is the length of the word
+ * - Prefix matching with early termination based on hand size
+ * 
+ * @see Node for the internal trie node implementation
+ */
 // TODO: Tests to ensure that this works. Especially the maxWordLength feature of anyStartWith()
 // TODO: Optimization: This class has many inefficient recursive calls
 class Dictionary {
     private val root = Node()
 
+    /** Checks if the given sequence is a complete word in the dictionary. */
     fun isWord(seq: CharSequence) = root.isWord(seq)
+    
+    /** Checks if any word in the dictionary starts with the given prefix, considering hand constraints. */
     fun anyStartWith(seq: CharSequence, hand: Hand) = root.isPrefix(seq, hand)
+    
+    /** Adds a word to the dictionary. Only lowercase a-z characters are allowed. */
     fun add(seq: CharSequence) = root.add(seq)
 }
 
 private class Node {
     val subNodes = Array<Node?>('z' - 'a' + 1) { null }
-    val commonNextCharacters = Array<Int>('z' - 'a' + 1) { 0 }
     var smallestLeaf = 0
     var terminal = false
 
     fun add(word: CharSequence) {
         //we only allow lowercase a-z
         if (word.any { char -> char.isUpperCase() || !char.isLetter() }) {
-            throw Exception("Word $word contains an illegal character")
+            throw IllegalArgumentException("Word '$word' contains an illegal character: only lowercase a-z allowed")
         }
 
         addRecursive(word)

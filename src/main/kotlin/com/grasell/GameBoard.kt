@@ -3,8 +3,17 @@ package com.grasell
 import kotlinx.collections.immutable.ImmutableMap
 
 /**
- * The new version of the Coord class packs 2 Int dimensions (x, y) into 1 Long.  The goal is to reduce memory pressure and GC overhead.
- * We use bit operations to extract the Int values when requested.
+ * Coordinate representation packed into a single Long value for memory efficiency.
+ * 
+ * The x coordinate is stored in the lower 32 bits and y in the upper 32 bits.
+ * This reduces memory pressure and GC overhead compared to creating many Coord objects.
+ * 
+ * Usage:
+ * ```
+ * val coord = newCoord(10, 20)
+ * println(coord.x)  // 10
+ * println(coord.y)  // 20
+ * ```
  */
 typealias Coord = Long
 val Coord.x: Int
@@ -25,19 +34,18 @@ fun newCoord(x: Int, y: Int): Coord {
     return low or high
 }
 
-// TODO: Optimization: Creating a billion little Coord objects is hard on GC.  We might be able to get rid of this class.
-// The implementation directly above should fix this optimization problem.
-//data class Coord(val x: Int, val y: Int) {
-//    val upOne get() = Coord(x, y-1)
-//    val downOne get() = Coord(x, y+1)
-//    val leftOne get() = Coord(x-1, y)
-//    val rightOne get() = Coord(x+1, y)
-//}
-
-// TODO: Optimization: If we get rid of Coord, how will we represent a game board?
-// Consider a linked graph with an anchor at (0,0)
+/**
+ * The game board represented as an immutable map from coordinates to tiles.
+ * 
+ * Uses ImmutableMap for safe state management during backtracking in the solver.
+ */
 typealias GameBoard = ImmutableMap<Coord, Tile>
 
+/**
+ * Represents a single tile on the game board.
+ * 
+ * @property char The letter character on this tile (lowercase a-z)
+ */
 data class Tile(val char: Char)
 
 fun GameBoard.withTile(char: Char?, coord: Coord): ImmutableMap<Coord, Tile> {
@@ -57,7 +65,7 @@ private fun GameBoard.horizontalWord(coord: Coord, newChar: Char) = wordFromLeft
 
 private fun GameBoard.verticalWord(coord: Coord, newChar: Char) = wordFromTop(coord.upOne) + newChar + wordToBottom(coord.downOne)
 
-// TODO: Optimization: need a more efficient way to build up the word representatino than concatting strings
+// TODO: Optimization: need a more efficient way to build up the word representation than concatenating strings
 private fun GameBoard.wordFromLeft(coord: Coord) =
         buildWord(coord, { it.leftOne }, { char, string -> char + string } )
 
@@ -100,10 +108,10 @@ fun GameBoard.allWords(): Sequence<String> = this.asSequence()
 fun GameBoard.humanReadable(): String {
     if (this.isEmpty()) return "[Empty board]"
 
-    val smallestX = this.asSequence().minBy { it.key.x }!!.key.x
-    val biggestX = this.asSequence().maxBy { it.key.x }!!.key.x
-    val smallestY = this.asSequence().minBy { it.key.y }!!.key.y
-    val biggestY = this.asSequence().maxBy { it.key.y }!!.key.y
+    val smallestX = this.asSequence().minByOrNull { it.key.x }?.key?.x ?: return "[Empty board]"
+    val biggestX = this.asSequence().maxByOrNull { it.key.x }?.key?.x ?: return "[Empty board]"
+    val smallestY = this.asSequence().minByOrNull { it.key.y }?.key?.y ?: return "[Empty board]"
+    val biggestY = this.asSequence().maxByOrNull { it.key.y }?.key?.y ?: return "[Empty board]"
 
     return (smallestY..biggestY).asSequence().map { y ->
         (smallestX..biggestX).asSequence()
