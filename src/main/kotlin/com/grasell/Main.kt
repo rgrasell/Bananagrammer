@@ -8,7 +8,7 @@ fun main(args: Array<String>) {
     val dict = buildDictionary()
     println("Dictionary built.")
 
-    val testString = "ryanalwaysdoit"
+    val testString = args.getOrElse(0) { "ryanalwaysdoit" }
 
     val time = measureTimeMillis {
         println(solve(stringToHand(testString), dict)?.humanReadable() ?: "No solution :(")
@@ -24,7 +24,7 @@ private fun buildDictionary(): Dictionary {
     val inputStream = File("dictionary.txt").inputStream()
 
     inputStream.bufferedReader().useLines {
-        it.map { word -> word.toLowerCase() }
+        it.map { word -> word.lowercase() }
                 .forEach { dictionary.add(it) }
     }
 
